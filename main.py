@@ -2,8 +2,15 @@ import zipfile
 import os
 import pandas as pd
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],    
+    allow_methods=["GET"],
+    allow_headers=["*"],
+)
 
 # Descomprimimos el zip si todavía no está descomprimido
 if not os.path.exists("properati"):
