@@ -28,15 +28,15 @@ function App() {
 
 
   useEffect(() => {
-    fetch("http://localhost:8000/barrios")
+    fetch("https://web-production-bdaa.up.railway.app/barrios")
       .then(res => res.json())
       .then(data => setBarrios(data))
 
-    fetch("http://localhost:8000/estadisticas")
+    fetch("https://web-production-bdaa.up.railway.app/estadisticas")
       .then(res => res.json())
       .then(data => setEstadisticas(data))
 
-    fetch("http://localhost:8000/superficies")
+    fetch("https://web-production-bdaa.up.railway.app/superficies")
       .then(res => res.json())
       .then(data => setSuperficies(data))
   }, [])
