@@ -72,3 +72,20 @@ def get_superficies():
         "min_superficies": round(df_superficie["surface_total_in_m2"].min(), 2),
         "max_superficies": round(df_superficie["surface_total_in_m2"].max(), 2),
     }
+
+# Endpoint 4: detalle de un barrio específico
+@app.get("/barrio/{nombre}")
+def get_barrio_detalle(nombre: str):
+    datos_barrio = df_apts[df_apts["place_name"].str.lower() == nombre.lower()]
+    
+    if len(datos_barrio) == 0:
+        return {"error": "Barrio no encontrado"}
+    
+    return {
+        "barrio": nombre,
+        "cantidad_propiedades": len(datos_barrio),
+        "precio_mediano": round(datos_barrio["price_usd_per_m2"].median(), 2),
+        "precio_minimo": round(datos_barrio["price_usd_per_m2"].min(), 2),
+        "precio_maximo": round(datos_barrio["price_usd_per_m2"].max(), 2),
+        "superficie_promedio": round(datos_barrio["surface_total_in_m2"].mean(), 2),
+    }
