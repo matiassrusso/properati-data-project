@@ -48,6 +48,7 @@ def get_barrios():
         .sort_values(ascending=False)
         .head(15)
         .reset_index()
+        .round(2)
         .rename(columns={"place_name": "barrio", "price_usd_per_m2": "precio_mediano"})
         .to_dict(orient="records")
     )
