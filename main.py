@@ -103,6 +103,22 @@ df_barrios_economicos = (
     .rename(columns={"place_name": "barrio", "price_usd_per_m2": "precio_mediano"})
 )
 
+# DataFrame: matriz completa cruzando zona y tipo de propiedad, mismo orden que /zonas
+zona_orden = df_zonas["zona"].tolist()
+matriz_index = pd.MultiIndex.from_product(
+    [zona_orden, tipos_propiedad], names=["state_name", "property_type"]
+)
+
+df_matriz = (
+    df_apts
+    .groupby(["state_name", "property_type"])["price_usd_per_m2"]
+    .agg(precio_mediano="median", cantidad_propiedades="count")
+    .reindex(matriz_index)
+    .reset_index()
+    .round(2)
+)
+df_matriz["tipo"] = df_matriz["property_type"].map(nombres_tipos)
+
 # Endpoint 1: top 15 barrios por precio mediano
 @app.get("/barrios")
 def get_barrios():
@@ -204,3 +220,16 @@ def get_zona_detalle(nombre: str):
         "superficie_promedio": round(datos_zona["surface_total_in_m2"].mean(), 2),
         "por_tipo": por_tipo.to_dict(orient="records"),
     }
+
+# Endpoint 10: matriz completa cruzando las 4 zonas con los 3 tipos de propiedad
+@app.get("/matriz-zona-tipo")
+def get_matriz_zona_tipo():
+    return [
+        {
+            "zona": zona,
+            "tipos": df_matriz[df_matriz["state_name"] == zona][
+                ["tipo", "precio_mediano", "cantidad_propiedades"]
+            ].to_dict(orient="records"),
+        }
+        for zona in zona_orden
+    ]
