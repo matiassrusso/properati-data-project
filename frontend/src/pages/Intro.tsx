@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { API_URL, type Estadisticas } from "../api"
+import { API_URL, type Estadisticas, type Zona, type TipoPropiedad } from "../api"
 import { IconResumen, IconTopBarrios, IconBuscador, IconSuperficies } from "../components/Dock"
-
-const TOTAL_FALLBACK = "19.215"
-const PRECIO_FALLBACK = "1.850"
 
 const SECCIONES = [
   {
@@ -32,15 +29,25 @@ const SECCIONES = [
 function Intro() {
   const navigate = useNavigate()
   const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null)
+  const [zonas, setZonas] = useState<Zona[] | null>(null)
+  const [tipos, setTipos] = useState<TipoPropiedad[] | null>(null)
 
   useEffect(() => {
     fetch(`${API_URL}/estadisticas`)
       .then(res => res.json())
       .then(data => setEstadisticas(data))
+    fetch(`${API_URL}/zonas`)
+      .then(res => res.json())
+      .then(data => setZonas(data))
+    fetch(`${API_URL}/tipos-propiedad`)
+      .then(res => res.json())
+      .then(data => setTipos(data))
   }, [])
 
-  const totalPropiedades = estadisticas ? estadisticas.total_propiedades.toLocaleString("es-AR") : TOTAL_FALLBACK
-  const precioMediano = estadisticas ? estadisticas.precio_mediano_caba : PRECIO_FALLBACK
+  const totalPropiedades = estadisticas ? estadisticas.total_propiedades.toLocaleString("es-AR") : "…"
+  const precioMediano = estadisticas ? estadisticas.precio_mediano_caba : "…"
+  const cantidadZonas = zonas ? zonas.length : "…"
+  const cantidadTipos = tipos ? tipos.length : "…"
 
   return (
     <section className="page intro-page">
@@ -62,11 +69,11 @@ function Intro() {
           <p className="mini-stat-label">Precio mediano por m²</p>
         </div>
         <div className="mini-stat">
-          <p className="mini-stat-value">4</p>
+          <p className="mini-stat-value">{cantidadZonas}</p>
           <p className="mini-stat-label">Zonas cubiertas</p>
         </div>
         <div className="mini-stat">
-          <p className="mini-stat-value">3</p>
+          <p className="mini-stat-value">{cantidadTipos}</p>
           <p className="mini-stat-label">Tipos de propiedad</p>
         </div>
       </div>
