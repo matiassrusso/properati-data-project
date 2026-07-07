@@ -1,4 +1,4 @@
-export const API_URL = "https://web-production-bdaa.up.railway.app"
+export const API_URL = import.meta.env.VITE_API_URL || "https://properati-production.up.railway.app"
 
 export interface Barrio {
   barrio: string
