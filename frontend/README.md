@@ -58,7 +58,7 @@ npm run dev
 
 The app will be available at `http://localhost:5173`.
 
-> By default the app points to the deployed backend on Railway. To use a local backend, update `API_URL` in `src/api.ts`.
+> By default the app points to the deployed backend on Render. To use a local backend, update `API_URL` in `src/api.ts`.
 
 ---
 

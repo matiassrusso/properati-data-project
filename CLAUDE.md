@@ -14,7 +14,7 @@ If a session is drifting sin un objetivo claro, nudge me back: "¿Esto es manten
 
 1. Idea/necesidad sale de uso real de la app o de la actualización pendiente del dataset
 2. Se implementa en `backend` (FastAPI, 10 endpoints) y/o `frontend` (React/TS, React Router)
-3. Deploy: push a `main` → Railway (backend) + Vercel (frontend) redeploy automático
+3. Deploy: push a `main` → Render (backend) + Vercel (frontend) redeploy automático
 
 ## Key People
 

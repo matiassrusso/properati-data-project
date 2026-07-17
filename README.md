@@ -2,7 +2,7 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
 ![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
-![Deploy](https://img.shields.io/badge/deploy-Railway%20%2B%20Vercel-black?style=flat)
+![Deploy](https://img.shields.io/badge/deploy-Render%20%2B%20Vercel-black?style=flat)
 # Properati Data Project
 
 Análisis del mercado inmobiliario de Buenos Aires sobre más de 48.000 propiedades (CABA y GBA).
@@ -27,7 +27,7 @@ properati-data-project/
 
 - **Backend:** Python, FastAPI, 10 endpoints
 - **Frontend:** React, TypeScript, React Router (5 páginas / 5 pages)
-- **Deploy:** Railway (backend) · Vercel (frontend)
+- **Deploy:** Render (backend) · Vercel (frontend)
 - **Dataset:** 48.133 propiedades — departamentos, casas y PH en CABA y GBA
 - **Dataset:** 48,133 listings — apartments, houses, and PH-type units in CABA and greater Buenos Aires
 

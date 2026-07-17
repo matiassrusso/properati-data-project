@@ -11,7 +11,7 @@ A RESTful API built with FastAPI that analyzes the real estate market of Buenos 
 
 - **Python** + **FastAPI** — REST API framework
 - **pandas** — data processing and aggregation
-- **Railway** — cloud deployment
+- **Render** — cloud deployment
 - **Dataset** — Properati Argentina ([source](https://github.com/mauriciomem/DS_desafio_1_Properati))
 
 ---
@@ -82,7 +82,7 @@ Interactive docs at `http://localhost:8000/docs`.
 properatti-app/
 ├── main.py           # FastAPI app, data loading, all endpoints
 ├── requirements.txt  # Python dependencies
-├── Procfile          # Railway deployment config
+├── Procfile          # Render deployment config
 └── properati.zip     # Dataset (not tracked in git)
 ```
 
