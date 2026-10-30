@@ -1,7 +1,10 @@
 import zipfile
 import os
+from functools import lru_cache
+from typing import Annotated
+import numpy as np
 import pandas as pd
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -35,7 +38,7 @@ df_amba = df[
 ].copy()
 
 df_apts = df_amba[df_amba["property_type"].isin(tipos_propiedad)][[
-    "place_name", "state_name", "property_type", "price_usd_per_m2", "surface_total_in_m2", "rooms"
+    "place_name", "state_name", "property_type", "price_usd_per_m2", "surface_total_in_m2", "rooms", "lat", "lon"
 ]].copy()
 
 df_apts = df_apts.dropna(subset=["price_usd_per_m2"])
@@ -233,3 +236,66 @@ def get_matriz_zona_tipo():
         }
         for zona in zona_orden
     ]
+
+# Caja razonable de Buenos Aires y GBA para descartar coordenadas erróneas
+LAT_MIN, LAT_MAX = -35.2, -34.2
+LON_MIN, LON_MAX = -59.2, -58.0
+MIN_PROPS_CELDA = 5
+
+df_geo = df_apts[
+    df_apts["lat"].between(LAT_MIN, LAT_MAX) &
+    df_apts["lon"].between(LON_MIN, LON_MAX)
+]
+
+# Cálculo cacheado por tamaño de celda (maxsize acota la memoria ante valores arbitrarios)
+@lru_cache(maxsize=32)
+def calcular_mapa_precios(celda: float):
+    g = df_geo.assign(
+        ilat=np.floor(df_geo["lat"] / celda),
+        ilon=np.floor(df_geo["lon"] / celda),
+    )
+    celdas = (
+        g.groupby(["ilat", "ilon"])["price_usd_per_m2"]
+        .agg(precio_mediano="median", cantidad="count")
+        .reset_index()
+    )
+    celdas = celdas[celdas["cantidad"] >= MIN_PROPS_CELDA]
+    celdas = [
+        {
+            "lat": round((r.ilat + 0.5) * celda, 4),
+            "lon": round((r.ilon + 0.5) * celda, 4),
+            "precio_mediano": int(round(r.precio_mediano)),
+            "cantidad": int(r.cantidad),
+        }
+        for r in celdas.itertuples()
+    ]
+
+    barrios = (
+        df_geo.groupby("place_name")
+        .agg(
+            lat=("lat", "mean"),
+            lon=("lon", "mean"),
+            precio_mediano=("price_usd_per_m2", "median"),
+            cantidad=("price_usd_per_m2", "count"),
+        )
+        .sort_values("cantidad", ascending=False)
+        .head(12)
+        .reset_index()
+        .rename(columns={"place_name": "barrio"})
+    )
+    barrios = [
+        {
+            "barrio": r.barrio,
+            "lat": round(r.lat, 4),
+            "lon": round(r.lon, 4),
+            "precio_mediano": int(round(r.precio_mediano)),
+            "cantidad": int(r.cantidad),
+        }
+        for r in barrios.itertuples()
+    ]
+    return {"celdas": celdas, "barrios": barrios}
+
+# Endpoint 11: celdas de precio por m2 y barrios principales para el mapa de calor
+@app.get("/mapa-precios")
+def get_mapa_precios(celda: Annotated[float, Query(ge=0.005, le=0.05)] = 0.01):
+    return calcular_mapa_precios(celda)

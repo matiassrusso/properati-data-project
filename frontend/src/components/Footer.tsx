@@ -1,4 +1,3 @@
-import "./Footer.css"
 
 function IconDatos() {
   return (

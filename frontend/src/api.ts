@@ -74,3 +74,26 @@ export interface MatrizZona {
 // un solo formato de números en toda la app
 export const fmt = (n: number, digits = 0) =>
   n.toLocaleString("es-AR", { maximumFractionDigits: digits })
+
+export interface CeldaMapa {
+  lat: number
+  lon: number
+  precio_mediano: number
+  cantidad: number
+}
+
+export interface BarrioMapa {
+  barrio: string
+  lat: number
+  lon: number
+  precio_mediano: number
+  cantidad: number
+}
+
+export interface MapaPrecios {
+  celdas: CeldaMapa[]
+  barrios: BarrioMapa[]
+}
+
+// "Bs.As. G.B.A. Zona Oeste" -> "GBA Zona Oeste"
+export const zonaCorta = (zona: string) => zona.replace("Bs.As. G.B.A.", "GBA").trim()

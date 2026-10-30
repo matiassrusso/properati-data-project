@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
-import Sello from "../components/Sello"
-import { API_URL, fmt, type DetalleBarrio, type Zona, type DetalleZona } from "../api"
+import { API_URL, fmt, zonaCorta, type DetalleBarrio, type Zona, type DetalleZona } from "../api"
 
 function Buscador() {
   const [busqueda, setBusqueda] = useState("")
@@ -14,8 +13,8 @@ function Buscador() {
       .then(data => setZonas(data))
   }, [])
 
-  // FIX 4: debounce — espera 400ms después de que el usuario deja de tipear
-  // antes de buscar. Así no dispara un fetch (y un posible error) por cada letra.
+  // debounce: espera 400ms después de que el usuario deja de tipear
+  // antes de buscar, así no dispara un fetch (y un posible error) por cada letra.
   useEffect(() => {
     if (!busqueda.trim()) {
       return
@@ -38,11 +37,15 @@ function Buscador() {
       .then(data => setZonaSeleccionada(data))
   }
 
+  const zonasOrdenadas = [...zonas].sort((a, b) => b.precio_mediano - a.precio_mediano)
+  const maxZona = zonasOrdenadas[0]?.precio_mediano ?? 1
+
   return (
-    <section className="page search-section">
+    <section className="page">
       <h2>Buscá tu barrio</h2>
-      <Sello />
+      <label className="sr-only" htmlFor="busqueda">Barrio</label>
       <input
+        id="busqueda"
         type="text"
         placeholder="Ej: Palermo, Belgrano, Recoleta"
         value={busqueda}
@@ -50,44 +53,49 @@ function Buscador() {
         className="search-input"
       />
 
-      {!busqueda.trim() && zonas.length > 0 && (
-        <div className="zona-explorer">
+      {!busqueda.trim() && zonasOrdenadas.length > 0 && (
+        <>
           <h3 className="section-title">Explorá por zona</h3>
-          <div className="stats-grid-compact">
-            {zonas.map(z => (
-              <button
-                key={z.zona}
-                className="stat-card stat-card-btn"
-                aria-pressed={zonaSeleccionada?.zona === z.zona}
-                onClick={() => buscarZona(z.zona)}
-              >
-                <p className="stat-label">{z.zona}</p>
-                <p className="stat-value">USD {fmt(z.precio_mediano)}</p>
-                <p className="stat-unit">{fmt(z.cantidad_propiedades)} propiedades</p>
-              </button>
+          <ul className="rank">
+            {zonasOrdenadas.map(z => (
+              <li key={z.zona}>
+                <button
+                  className="rank-row"
+                  aria-pressed={zonaSeleccionada?.zona === z.zona}
+                  onClick={() => buscarZona(z.zona)}
+                >
+                  <span className="rank-name">
+                    {zonaCorta(z.zona)}
+                    <span className="rank-sub">{fmt(z.cantidad_propiedades)} propiedades</span>
+                  </span>
+                  <span className="rank-bar" aria-hidden="true">
+                    <i style={{ width: `${(z.precio_mediano / maxZona) * 100}%` }} />
+                  </span>
+                  <span className="rank-value">USD {fmt(z.precio_mediano)}</span>
+                </button>
+              </li>
             ))}
-          </div>
+          </ul>
 
           {zonaSeleccionada && (
-            <div className="detalle-card">
-              <h3>{zonaSeleccionada.zona}</h3>
-              <div className="detalle-grid">
+            <div className="detalle">
+              <h3>{zonaCorta(zonaSeleccionada.zona)}</h3>
+              <dl className="kv">
                 <div>
-                  <p className="detalle-label">Precio mediano</p>
-                  <p className="detalle-value">USD {fmt(zonaSeleccionada.precio_mediano)}/m²</p>
+                  <dt>Precio mediano</dt>
+                  <dd>USD {fmt(zonaSeleccionada.precio_mediano)}<small>/m²</small></dd>
                 </div>
                 <div>
-                  <p className="detalle-label">Propiedades</p>
-                  <p className="detalle-value">{fmt(zonaSeleccionada.cantidad_propiedades)}</p>
+                  <dt>Propiedades</dt>
+                  <dd>{fmt(zonaSeleccionada.cantidad_propiedades)}</dd>
                 </div>
                 <div>
-                  <p className="detalle-label">Superficie promedio</p>
-                  <p className="detalle-value">{fmt(zonaSeleccionada.superficie_promedio, 1)} m²</p>
+                  <dt>Superficie promedio</dt>
+                  <dd>{fmt(zonaSeleccionada.superficie_promedio, 1)}<small>m²</small></dd>
                 </div>
-              </div>
+              </dl>
 
               <div className="detalle-portipo">
-                <p className="detalle-label">Por tipo de propiedad</p>
                 {zonaSeleccionada.por_tipo.map(t => (
                   <div key={t.tipo} className="detalle-portipo-row">
                     <strong>{t.tipo}</strong>
@@ -97,30 +105,30 @@ function Buscador() {
               </div>
             </div>
           )}
-        </div>
+        </>
       )}
 
       {busqueda.trim() && detalle && !detalle.error && (
-        <div className="detalle-card">
+        <div className="detalle">
           <h3>{detalle.barrio}</h3>
-          <div className="detalle-grid">
+          <dl className="kv">
             <div>
-              <p className="detalle-label">Precio mediano</p>
-              <p className="detalle-value">USD {fmt(detalle.precio_mediano)}/m²</p>
+              <dt>Precio mediano</dt>
+              <dd>USD {fmt(detalle.precio_mediano)}<small>/m²</small></dd>
             </div>
             <div>
-              <p className="detalle-label">Rango de precios</p>
-              <p className="detalle-value">USD {fmt(detalle.precio_minimo)} a {fmt(detalle.precio_maximo)}</p>
+              <dt>Rango de precios</dt>
+              <dd>{fmt(detalle.precio_minimo)} a {fmt(detalle.precio_maximo)}<small>USD</small></dd>
             </div>
             <div>
-              <p className="detalle-label">Propiedades</p>
-              <p className="detalle-value">{fmt(detalle.cantidad_propiedades)}</p>
+              <dt>Propiedades</dt>
+              <dd>{fmt(detalle.cantidad_propiedades)}</dd>
             </div>
             <div>
-              <p className="detalle-label">Superficie promedio</p>
-              <p className="detalle-value">{fmt(detalle.superficie_promedio, 1)} m²</p>
+              <dt>Superficie promedio</dt>
+              <dd>{fmt(detalle.superficie_promedio, 1)}<small>m²</small></dd>
             </div>
-          </div>
+          </dl>
         </div>
       )}
 

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
-import Sello from "../components/Sello"
-import { API_URL, fmt, type Estadisticas, type Superficies, type Zona, type TipoPropiedad, type MatrizZona } from "../api"
+import { API_URL, fmt, zonaCorta, type Estadisticas, type Superficies, type Zona, type TipoPropiedad, type MatrizZona } from "../api"
 
 function Resumen() {
   const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null)
@@ -10,91 +9,77 @@ function Resumen() {
   const [matriz, setMatriz] = useState<MatrizZona[]>([])
 
   useEffect(() => {
-    fetch(`${API_URL}/estadisticas`)
-      .then(res => res.json())
-      .then(data => setEstadisticas(data))
-
-    fetch(`${API_URL}/superficies`)
-      .then(res => res.json())
-      .then(data => setSuperficies(data))
-
-    fetch(`${API_URL}/zonas`)
-      .then(res => res.json())
-      .then(data => setZonas(data))
-
-    fetch(`${API_URL}/tipos-propiedad`)
-      .then(res => res.json())
-      .then(data => setTipos(data))
-
-    fetch(`${API_URL}/matriz-zona-tipo`)
-      .then(res => res.json())
-      .then(data => setMatriz(data))
+    fetch(`${API_URL}/estadisticas`).then(res => res.json()).then(setEstadisticas)
+    fetch(`${API_URL}/superficies`).then(res => res.json()).then(setSuperficies)
+    fetch(`${API_URL}/zonas`).then(res => res.json()).then(setZonas)
+    fetch(`${API_URL}/tipos-propiedad`).then(res => res.json()).then(setTipos)
+    fetch(`${API_URL}/matriz-zona-tipo`).then(res => res.json()).then(setMatriz)
   }, [])
 
   const columnasTipo = matriz[0]?.tipos.map(t => t.tipo) ?? []
+  const zonasOrdenadas = [...zonas].sort((a, b) => b.precio_mediano - a.precio_mediano)
+  const tiposOrdenados = [...tipos].sort((a, b) => b.precio_mediano - a.precio_mediano)
+  const maxZona = zonasOrdenadas[0]?.precio_mediano ?? 1
+  const maxTipo = tiposOrdenados[0]?.precio_mediano ?? 1
 
   return (
-    <section className="page resumen-page">
+    <section className="page">
       <h2>Resumen del mercado</h2>
-      <Sello />
 
       {estadisticas && superficies && (
-        <div className="stats-grid">
-          <div className="stat-card stat-key">
-            <p className="stat-label">Precio mediano</p>
-            <p className="stat-value">USD {fmt(estadisticas.precio_mediano_caba)}</p>
-            <p className="stat-unit">por m²</p>
-          </div>
-          <div className="stat-card">
-            <p className="stat-label">Propiedades analizadas</p>
-            <p className="stat-value">{fmt(estadisticas.total_propiedades)}</p>
-            <p className="stat-unit">en venta</p>
-          </div>
-          <div className="stat-card">
-            <p className="stat-label">Superficie mediana</p>
-            <p className="stat-value">{fmt(superficies.mediana_superficies, 1)}</p>
-            <p className="stat-unit">m²</p>
-          </div>
-        </div>
+        <p className="lede">
+          <span className="num">{fmt(estadisticas.total_propiedades)}</span> propiedades en venta. Precio mediano
+          de <span className="num">USD {fmt(estadisticas.precio_mediano_caba)}</span> por m², con una superficie mediana
+          de <span className="num">{fmt(superficies.mediana_superficies, 1)} m²</span>.
+        </p>
       )}
 
-      {zonas.length > 0 && (
+      {zonasOrdenadas.length > 0 && (
         <>
           <h3 className="section-title">Precio por zona</h3>
-          <div className="stats-grid-compact">
-            {zonas.map(z => (
-              <div key={z.zona} className="stat-card">
-                <p className="stat-label">{z.zona}</p>
-                <p className="stat-value">USD {fmt(z.precio_mediano)}</p>
-                <p className="stat-unit">{fmt(z.cantidad_propiedades)} propiedades</p>
-              </div>
+          <ul className="rank">
+            {zonasOrdenadas.map((z, i) => (
+              <li key={z.zona} className={`rank-row${i === 0 ? " lead" : ""}`}>
+                <span className="rank-name">
+                  {zonaCorta(z.zona)}
+                  <span className="rank-sub">{fmt(z.cantidad_propiedades)} propiedades</span>
+                </span>
+                <span className="rank-bar" aria-hidden="true">
+                  <i style={{ width: `${(z.precio_mediano / maxZona) * 100}%` }} />
+                </span>
+                <span className="rank-value">USD {fmt(z.precio_mediano)}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </>
       )}
 
-      {tipos.length > 0 && (
+      {tiposOrdenados.length > 0 && (
         <>
           <h3 className="section-title">Precio por tipo de propiedad</h3>
-          <div className="stats-grid">
-            {tipos.map(t => (
-              <div key={t.tipo} className="stat-card">
-                <p className="stat-label">{t.tipo}</p>
-                <p className="stat-value">USD {fmt(t.precio_mediano)}</p>
-                <p className="stat-unit">por m²</p>
-                <div className="stat-extra">
-                  <span>{fmt(t.cantidad_propiedades)} propiedades</span>
-                  <span>{fmt(t.superficie_promedio, 1)} m² promedio</span>
-                </div>
-              </div>
+          <ul className="rank">
+            {tiposOrdenados.map((t, i) => (
+              <li key={t.tipo} className={`rank-row${i === 0 ? " lead" : ""}`}>
+                <span className="rank-name">
+                  {t.tipo}
+                  <span className="rank-sub">
+                    {fmt(t.cantidad_propiedades)} propiedades, {fmt(t.superficie_promedio, 1)} m² promedio
+                  </span>
+                </span>
+                <span className="rank-bar" aria-hidden="true">
+                  <i style={{ width: `${(t.precio_mediano / maxTipo) * 100}%` }} />
+                </span>
+                <span className="rank-value">USD {fmt(t.precio_mediano)}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </>
       )}
 
       {matriz.length > 0 && (
         <>
           <h3 className="section-title">Precio por zona y tipo de propiedad</h3>
+          <p className="section-note">USD por m², mediana</p>
           <div className="matriz-wrapper">
             <table className="matriz-table">
               <thead>
@@ -108,12 +93,10 @@ function Resumen() {
               <tbody>
                 {matriz.map(z => (
                   <tr key={z.zona}>
-                    <th scope="row">{z.zona}</th>
+                    <th scope="row">{zonaCorta(z.zona)}</th>
                     {columnasTipo.map(tipo => {
                       const entry = z.tipos.find(t => t.tipo === tipo)
-                      return (
-                        <td key={tipo}>{entry ? `USD ${fmt(entry.precio_mediano)}` : "—"}</td>
-                      )
+                      return <td key={tipo}>{entry ? fmt(entry.precio_mediano) : "sin datos"}</td>
                     })}
                   </tr>
                 ))}

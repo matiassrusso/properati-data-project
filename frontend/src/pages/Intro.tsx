@@ -1,105 +1,52 @@
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import Sello from "../components/Sello"
-import { API_URL, fmt, type Estadisticas, type Zona, type TipoPropiedad } from "../api"
-import { IconResumen, IconTopBarrios, IconBuscador, IconSuperficies } from "../components/Dock"
-
-const SECCIONES = [
-  {
-    icon: IconResumen,
-    titulo: "Resumen del mercado",
-    descripcion: "Precio mediano por zona y tipo de propiedad, de un vistazo.",
-  },
-  {
-    icon: IconTopBarrios,
-    titulo: "Ranking de barrios",
-    descripcion: "Los barrios más caros y más económicos, lado a lado.",
-  },
-  {
-    icon: IconBuscador,
-    titulo: "Buscador por zona",
-    descripcion: "Precio y superficie promedio de cualquier barrio.",
-  },
-  {
-    icon: IconSuperficies,
-    titulo: "Análisis de superficies",
-    descripcion: "Cómo varía el precio según la cantidad de ambientes.",
-  },
-]
+import { Link } from "react-router-dom"
+import MapaPrecios from "../components/MapaPrecios"
+import { API_URL, fmt, zonaCorta, type Estadisticas, type Zona, type MapaPrecios as Datos } from "../api"
 
 function Intro() {
-  const navigate = useNavigate()
   const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null)
-  const [zonas, setZonas] = useState<Zona[] | null>(null)
-  const [tipos, setTipos] = useState<TipoPropiedad[] | null>(null)
+  const [zonas, setZonas] = useState<Zona[]>([])
+  const [enMapa, setEnMapa] = useState<number | null>(null)
 
   useEffect(() => {
-    fetch(`${API_URL}/estadisticas`)
-      .then(res => res.json())
-      .then(data => setEstadisticas(data))
-    fetch(`${API_URL}/zonas`)
-      .then(res => res.json())
-      .then(data => setZonas(data))
-    fetch(`${API_URL}/tipos-propiedad`)
-      .then(res => res.json())
-      .then(data => setTipos(data))
+    fetch(`${API_URL}/estadisticas`).then(res => res.json()).then(setEstadisticas)
+    fetch(`${API_URL}/zonas`).then(res => res.json()).then(setZonas)
   }, [])
 
-  const totalPropiedades = estadisticas ? fmt(estadisticas.total_propiedades) : "…"
-  const precioMediano = estadisticas ? fmt(estadisticas.precio_mediano_caba) : "…"
-  const cantidadZonas = zonas ? zonas.length : "…"
-  const cantidadTipos = tipos ? tipos.length : "…"
+  const ordenadas = [...zonas].sort((a, b) => b.precio_mediano - a.precio_mediano)
+  const cara = ordenadas[0]
+  const barata = ordenadas[ordenadas.length - 1]
+  const veces = cara && barata ? (cara.precio_mediano / barata.precio_mediano).toFixed(1).replace(".", ",") : null
 
   return (
-    <section className="page intro-page">
-      <span className="eyebrow">Properati · Buenos Aires</span>
-      <h1>Mercado inmobiliario<br />de CABA y GBA</h1>
-      <Sello />
-      <p className="hero-sub">
-        Un análisis de {totalPropiedades} propiedades en venta en Capital Federal y el Gran Buenos Aires,
-        con datos reales de Properati sobre precio por m², superficies y comparativas por zona y por
-        tipo de propiedad (departamentos, casas y PH).
-      </p>
-
-      <div className="mini-stats-row">
-        <div className="mini-stat">
-          <p className="mini-stat-value">{totalPropiedades}</p>
-          <p className="mini-stat-label">Propiedades analizadas</p>
-        </div>
-        <div className="mini-stat">
-          <p className="mini-stat-value">USD {precioMediano}</p>
-          <p className="mini-stat-label">Precio mediano por m²</p>
-        </div>
-        <div className="mini-stat">
-          <p className="mini-stat-value">{cantidadZonas}</p>
-          <p className="mini-stat-label">Zonas cubiertas</p>
-        </div>
-        <div className="mini-stat">
-          <p className="mini-stat-value">{cantidadTipos}</p>
-          <p className="mini-stat-label">Tipos de propiedad</p>
-        </div>
+    <section className="page home">
+      <div className="home-copy">
+        <h1>
+          {cara && barata && veces
+            ? `El m² en ${zonaCorta(cara.zona)} cuesta ${veces} veces el de ${zonaCorta(barata.zona)}`
+            : "Cuánto cuesta el m² en Buenos Aires"}
+        </h1>
+        <p>
+          {estadisticas ? (
+            <>
+              Precio por m² de <span className="num">{fmt(estadisticas.total_propiedades)}</span> propiedades en
+              venta en CABA y GBA. Mediana general: <span className="num">USD {fmt(estadisticas.precio_mediano_caba)}</span>.
+            </>
+          ) : (
+            "Precio por m² de las propiedades en venta en CABA y GBA."
+          )}
+        </p>
+        {enMapa !== null && (
+          <p>
+            El mapa muestra <span className="num">{fmt(enMapa)}</span> propiedades: solo las que traen coordenadas
+            en el dataset, que es de ~2020.
+          </p>
+        )}
+        <Link to="/barrios" className="cta">
+          Ver el ranking de barrios
+        </Link>
       </div>
-
-      <div className="explora-section">
-        <h2 className="explora-title">Qué vas a encontrar</h2>
-        <div className="explora-grid">
-          {SECCIONES.map(({ icon: Icon, titulo, descripcion }) => (
-            <div className="explora-item" key={titulo}>
-              <span className="explora-icon">
-                <Icon />
-              </span>
-              <div>
-                <p className="explora-item-title">{titulo}</p>
-                <p className="explora-item-desc">{descripcion}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <button className="scroll-down-btn" onClick={() => navigate("/resumen")}>
-        Ver el análisis →
-      </button>
+      <MapaPrecios onCargar={(d: Datos) => setEnMapa(d.celdas.reduce((acc, c) => acc + c.cantidad, 0))} />
     </section>
   )
 }
