@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react"
+import { lazy, Suspense, useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import MapaPrecios from "../components/MapaPrecios"
 import { API_URL, fmt, zonaCorta, type Estadisticas, type Zona, type MapaPrecios as Datos } from "../api"
+
+// MapLibre pesa mucho: solo se descarga al entrar al home
+const MapaPrecios = lazy(() => import("../components/MapaPrecios"))
 
 function Intro() {
   const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null)
@@ -46,7 +48,9 @@ function Intro() {
           Ver el ranking de barrios
         </Link>
       </div>
-      <MapaPrecios onCargar={(d: Datos) => setEnMapa(d.celdas.reduce((acc, c) => acc + c.cantidad, 0))} />
+      <Suspense fallback={<div className="map-wrap"><p className="map-status">Cargando el mapa</p></div>}>
+        <MapaPrecios onCargar={(d: Datos) => setEnMapa(d.celdas.reduce((acc, c) => acc + c.cantidad, 0))} />
+      </Suspense>
     </section>
   )
 }
