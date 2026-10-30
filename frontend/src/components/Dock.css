@@ -1,18 +1,17 @@
 .dock {
   position: fixed;
   left: 50%;
-  bottom: 1.25rem;
+  bottom: 20px;
   transform: translateX(-50%);
   z-index: 100;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-  border: 1px solid #E8ECF0;
-  border-radius: 20px;
-  padding: 0.5rem;
-  box-shadow: 0 12px 32px rgba(20, 37, 54, 0.12);
+  gap: 4px;
+  background: var(--card);
+  border: 1px solid var(--hair);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
 .dock-item {
@@ -20,25 +19,25 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.2rem;
+  gap: 4px;
   min-width: 56px;
-  min-height: 52px;
-  padding: 0.4rem 0.6rem;
-  border-radius: 14px;
-  color: #5C7184;
+  min-height: 48px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  color: var(--muted);
   text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  transition: background-color 0.15s var(--ease), color 0.15s var(--ease);
 }
 
 .dock-item:hover {
-  color: #142536;
-  background: #E8ECF0;
+  color: var(--text);
+  background: var(--raised);
 }
 
 .dock-icon {
   display: flex;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
 }
 
 .dock-icon svg {
@@ -47,34 +46,23 @@
 }
 
 .dock-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 500;
   white-space: nowrap;
 }
 
-.dock-item-active {
-  color: #EAF2FA;
-  background: #1C77B5;
-  transform: translateY(-3px);
-}
-
+.dock-item-active,
 .dock-item-active:hover {
-  color: #EAF2FA;
-  background: #1C77B5;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dock-item {
-    transition: none;
-  }
+  color: var(--accent);
+  background: var(--raised);
 }
 
 @media (max-width: 480px) {
   .dock {
-    left: 0.75rem;
-    right: 0.75rem;
-    bottom: 0.75rem;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
     transform: none;
     justify-content: space-between;
   }
@@ -82,10 +70,6 @@
   .dock-item {
     flex: 1;
     min-width: 0;
-    padding: 0.4rem 0.3rem;
-  }
-
-  .dock-label {
-    font-size: 9px;
+    padding: 4px;
   }
 }

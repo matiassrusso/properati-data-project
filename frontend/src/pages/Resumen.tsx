@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react"
-import { API_URL, type Estadisticas, type Superficies, type Zona, type TipoPropiedad, type MatrizZona } from "../api"
-
-const COLORES_ZONA = ["stat-coral", "stat-lime", "stat-cream", "stat-coral"]
-const COLORES_TIPO = ["stat-coral", "stat-lime", "stat-cream"]
+import Sello from "../components/Sello"
+import { API_URL, fmt, type Estadisticas, type Superficies, type Zona, type TipoPropiedad, type MatrizZona } from "../api"
 
 function Resumen() {
   const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null)
@@ -38,22 +36,23 @@ function Resumen() {
   return (
     <section className="page resumen-page">
       <h2>Resumen del mercado</h2>
+      <Sello />
 
       {estadisticas && superficies && (
         <div className="stats-grid">
-          <div className="stat-card stat-coral">
+          <div className="stat-card stat-key">
             <p className="stat-label">Precio mediano</p>
-            <p className="stat-value">USD {estadisticas.precio_mediano_caba}</p>
+            <p className="stat-value">USD {fmt(estadisticas.precio_mediano_caba)}</p>
             <p className="stat-unit">por m²</p>
           </div>
-          <div className="stat-card stat-lime">
+          <div className="stat-card">
             <p className="stat-label">Propiedades analizadas</p>
-            <p className="stat-value">{estadisticas.total_propiedades.toLocaleString()}</p>
+            <p className="stat-value">{fmt(estadisticas.total_propiedades)}</p>
             <p className="stat-unit">en venta</p>
           </div>
-          <div className="stat-card stat-cream">
+          <div className="stat-card">
             <p className="stat-label">Superficie mediana</p>
-            <p className="stat-value">{superficies.mediana_superficies}</p>
+            <p className="stat-value">{fmt(superficies.mediana_superficies, 1)}</p>
             <p className="stat-unit">m²</p>
           </div>
         </div>
@@ -63,11 +62,11 @@ function Resumen() {
         <>
           <h3 className="section-title">Precio por zona</h3>
           <div className="stats-grid-compact">
-            {zonas.map((z, i) => (
-              <div key={z.zona} className={`stat-card ${COLORES_ZONA[i % COLORES_ZONA.length]}`}>
+            {zonas.map(z => (
+              <div key={z.zona} className="stat-card">
                 <p className="stat-label">{z.zona}</p>
-                <p className="stat-value">USD {z.precio_mediano}</p>
-                <p className="stat-unit">{z.cantidad_propiedades.toLocaleString()} propiedades</p>
+                <p className="stat-value">USD {fmt(z.precio_mediano)}</p>
+                <p className="stat-unit">{fmt(z.cantidad_propiedades)} propiedades</p>
               </div>
             ))}
           </div>
@@ -78,14 +77,14 @@ function Resumen() {
         <>
           <h3 className="section-title">Precio por tipo de propiedad</h3>
           <div className="stats-grid">
-            {tipos.map((t, i) => (
-              <div key={t.tipo} className={`stat-card ${COLORES_TIPO[i % COLORES_TIPO.length]}`}>
+            {tipos.map(t => (
+              <div key={t.tipo} className="stat-card">
                 <p className="stat-label">{t.tipo}</p>
-                <p className="stat-value">USD {t.precio_mediano}</p>
+                <p className="stat-value">USD {fmt(t.precio_mediano)}</p>
                 <p className="stat-unit">por m²</p>
                 <div className="stat-extra">
-                  <span>{t.cantidad_propiedades.toLocaleString()} propiedades</span>
-                  <span>{t.superficie_promedio} m² promedio</span>
+                  <span>{fmt(t.cantidad_propiedades)} propiedades</span>
+                  <span>{fmt(t.superficie_promedio, 1)} m² promedio</span>
                 </div>
               </div>
             ))}
@@ -113,7 +112,7 @@ function Resumen() {
                     {columnasTipo.map(tipo => {
                       const entry = z.tipos.find(t => t.tipo === tipo)
                       return (
-                        <td key={tipo}>{entry ? `USD ${entry.precio_mediano}` : "—"}</td>
+                        <td key={tipo}>{entry ? `USD ${fmt(entry.precio_mediano)}` : "—"}</td>
                       )
                     })}
                   </tr>

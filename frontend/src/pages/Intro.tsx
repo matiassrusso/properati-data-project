@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { API_URL, type Estadisticas, type Zona, type TipoPropiedad } from "../api"
+import Sello from "../components/Sello"
+import { API_URL, fmt, type Estadisticas, type Zona, type TipoPropiedad } from "../api"
 import { IconResumen, IconTopBarrios, IconBuscador, IconSuperficies } from "../components/Dock"
 
 const SECCIONES = [
@@ -44,8 +45,8 @@ function Intro() {
       .then(data => setTipos(data))
   }, [])
 
-  const totalPropiedades = estadisticas ? estadisticas.total_propiedades.toLocaleString("es-AR") : "…"
-  const precioMediano = estadisticas ? estadisticas.precio_mediano_caba : "…"
+  const totalPropiedades = estadisticas ? fmt(estadisticas.total_propiedades) : "…"
+  const precioMediano = estadisticas ? fmt(estadisticas.precio_mediano_caba) : "…"
   const cantidadZonas = zonas ? zonas.length : "…"
   const cantidadTipos = tipos ? tipos.length : "…"
 
@@ -53,6 +54,7 @@ function Intro() {
     <section className="page intro-page">
       <span className="eyebrow">Properati · Buenos Aires</span>
       <h1>Mercado inmobiliario<br />de CABA y GBA</h1>
+      <Sello />
       <p className="hero-sub">
         Un análisis de {totalPropiedades} propiedades en venta en Capital Federal y el Gran Buenos Aires,
         con datos reales de Properati sobre precio por m², superficies y comparativas por zona y por

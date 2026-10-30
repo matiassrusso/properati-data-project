@@ -70,3 +70,7 @@ export interface MatrizZona {
   zona: string
   tipos: MatrizTipo[]
 }
+
+// un solo formato de números en toda la app
+export const fmt = (n: number, digits = 0) =>
+  n.toLocaleString("es-AR", { maximumFractionDigits: digits })

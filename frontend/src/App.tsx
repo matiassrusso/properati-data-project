@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import { API_URL, type Barrio } from "./api"
+import { API_URL, fmt, type Barrio } from "./api"
 import Dock from "./components/Dock"
 import Footer from "./components/Footer"
 import Intro from "./pages/Intro"
@@ -22,11 +22,11 @@ function App() {
   return (
     <BrowserRouter>
       <div className="ticker">
-        <span className="ticker-label">ranking</span>
+        <span className="ticker-label">Ranking</span>
         <div className="ticker-track">
-          {[...barrios, ...barrios].map((b, index) => (
-            <span className="ticker-item" key={index}>
-              #{(index % barrios.length) + 1} {b.barrio} <strong>USD {b.precio_mediano}/m²</strong>
+          {barrios.map((b, index) => (
+            <span className="ticker-item" key={b.barrio}>
+              #{index + 1} {b.barrio} <strong>USD {fmt(b.precio_mediano)}/m²</strong>
             </span>
           ))}
         </div>
