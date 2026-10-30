@@ -18,9 +18,21 @@ interface Hover {
   cantidad: number
 }
 
-function MapaPrecios({ onCargar }: { onCargar?: (d: Datos) => void }) {
+interface Props {
+  onCargar?: (d: Datos) => void
+  // si se pasa, el mapa deja elegir un punto con un clic y lo marca con un pin
+  onElegir?: (lat: number, lon: number) => void
+  punto?: { lat: number; lon: number } | null
+}
+
+function MapaPrecios({ onCargar, onElegir, punto }: Props) {
   const contRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<maplibregl.Map | null>(null)
+  const pinRef = useRef<maplibregl.Marker | null>(null)
+  const elegirRef = useRef(onElegir)
+  useEffect(() => {
+    elegirRef.current = onElegir
+  })
   const [datos, setDatos] = useState<Datos | null>(null)
   const [error, setError] = useState(false)
   const [listo, setListo] = useState(false)
@@ -55,6 +67,7 @@ function MapaPrecios({ onCargar }: { onCargar?: (d: Datos) => void }) {
     map.touchZoomRotate.disableRotation()
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right")
     map.on("load", () => setListo(true))
+    map.on("click", e => elegirRef.current?.(e.lngLat.lat, e.lngLat.lng))
     mapRef.current = map
     setAncho(contRef.current.clientWidth)
     return () => {
@@ -62,6 +75,23 @@ function MapaPrecios({ onCargar }: { onCargar?: (d: Datos) => void }) {
       mapRef.current = null
     }
   }, [])
+
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+    if (!punto) {
+      pinRef.current?.remove()
+      pinRef.current = null
+      return
+    }
+    if (!pinRef.current) {
+      const el = document.createElement("div")
+      el.className = "map-pin"
+      pinRef.current = new maplibregl.Marker({ element: el }).setLngLat([punto.lon, punto.lat]).addTo(map)
+    } else {
+      pinRef.current.setLngLat([punto.lon, punto.lat])
+    }
+  }, [punto])
 
   const rango = useMemo(() => {
     if (!datos) return null

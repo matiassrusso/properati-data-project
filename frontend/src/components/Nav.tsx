@@ -3,6 +3,7 @@ import Sello from "./Sello"
 
 const items = [
   { to: "/", label: "Mapa", end: true },
+  { to: "/prediccion", label: "Predicción" },
   { to: "/resumen", label: "Resumen" },
   { to: "/barrios", label: "Top barrios" },
   { to: "/buscador", label: "Buscador" },

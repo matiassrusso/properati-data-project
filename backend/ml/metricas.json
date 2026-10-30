@@ -1,0 +1,40 @@
+{
+  "mae_usd_m2": 378.89,
+  "mape": 0.194,
+  "r2": 0.6852,
+  "baseline_mae_usd_m2": 530.99,
+  "baseline_mape": 0.3277,
+  "baseline_r2": 0.4993,
+  "cobertura_intervalo": 0.7521,
+  "n_entrenamiento": 21957,
+  "n_prueba": 5490,
+  "importancias": [
+    {
+      "variable": "lon",
+      "importancia": 0.9629
+    },
+    {
+      "variable": "lat",
+      "importancia": 0.8508
+    },
+    {
+      "variable": "superficie",
+      "importancia": 0.5531
+    },
+    {
+      "variable": "tipo",
+      "importancia": 0.1122
+    },
+    {
+      "variable": "ambientes",
+      "importancia": 0.0692
+    }
+  ],
+  "iteraciones": [
+    894,
+    498,
+    519
+  ],
+  "version_sklearn": "1.9.0",
+  "fecha_entrenamiento": "2026-10-30T20:46:34+00:00"
+}

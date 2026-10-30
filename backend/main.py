@@ -7,11 +7,13 @@ import pandas as pd
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
+from ml import predictor
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],    
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -299,3 +301,13 @@ def calcular_mapa_precios(celda: float):
 @app.get("/mapa-precios")
 def get_mapa_precios(celda: Annotated[float, Query(ge=0.005, le=0.05)] = 0.01):
     return calcular_mapa_precios(celda)
+
+# Endpoint 12: predicción de precio por m2 con ML (datos de ~2020, USD nominales)
+@app.post("/predecir")
+def post_predecir(entrada: predictor.EntradaPrediccion) -> predictor.SalidaPrediccion:
+    return predictor.predecir(entrada)
+
+# Endpoint 13: métricas y descripción del modelo
+@app.get("/modelo")
+def get_modelo():
+    return predictor.info_modelo()

@@ -241,6 +241,119 @@ a {
   transform: scale(0.98);
 }
 
+/* PREDICCIÓN: formulario a la izquierda, mapa para elegir el punto a la derecha */
+.tasador {
+  display: grid;
+  grid-template-columns: minmax(300px, 400px) 1fr;
+  gap: 32px;
+  align-items: stretch;
+}
+
+.tasador .map-wrap {
+  min-height: 560px;
+}
+
+.tasador-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.field {
+  border: none;
+  min-width: 0;
+}
+
+.field label,
+.field legend {
+  display: block;
+  margin-bottom: 8px;
+  padding: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.field .tabs {
+  margin-bottom: 0;
+  flex-wrap: wrap;
+}
+
+.field .search-input {
+  max-width: none;
+}
+
+.field-error {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #F08A7A;
+}
+
+.resultado {
+  padding-top: 24px;
+  border-top: 1px solid var(--hair);
+  min-height: 160px;
+}
+
+.resultado-vacio {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.resultado-linea {
+  font-size: 18px;
+  color: var(--text-2);
+  margin-bottom: 12px;
+}
+
+.resultado-cifra {
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.resultado-detalle {
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+
+.resultado-detalle .num {
+  color: var(--text);
+  font-size: 13px;
+}
+
+.resultado-aviso {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.resultado-aviso::before {
+  content: '';
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.resultado-aviso.ajustado::before {
+  background: var(--accent);
+}
+
+.map-pin {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
 /* MAPA */
 .map-wrap {
   position: relative;
@@ -685,6 +798,12 @@ button.rank-row[aria-pressed="true"] .rank-name {
 }
 
 @media (max-width: 900px) {
+  .tasador {
+    grid-template-columns: 1fr;
+  }
+  .tasador .map-wrap {
+    min-height: 420px;
+  }
   .home {
     grid-template-columns: 1fr;
     gap: 32px;

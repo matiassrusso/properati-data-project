@@ -1,0 +1,251 @@
+{
+ "fuente": "IDECBA, Dinámica del mercado de venta de departamentos, 4T 2025 (precios de publicación, Argenprop)",
+ "validacion": {
+  "n": 114,
+  "cubiertos": 114,
+  "mape_sin_calibrar": 0.094,
+  "mape_calibrado_loo": 0.063
+ },
+ "barrios": [
+  {
+   "barrio": "Agronomía",
+   "lat": -34.592,
+   "lon": -58.484,
+   "log_ratio": -0.02943
+  },
+  {
+   "barrio": "Almagro",
+   "lat": -34.608,
+   "lon": -58.422,
+   "log_ratio": -0.02704
+  },
+  {
+   "barrio": "Balvanera",
+   "lat": -34.61,
+   "lon": -58.403,
+   "log_ratio": -0.10517
+  },
+  {
+   "barrio": "Barracas",
+   "lat": -34.638,
+   "lon": -58.374,
+   "log_ratio": -0.17758
+  },
+  {
+   "barrio": "Belgrano",
+   "lat": -34.564,
+   "lon": -58.453,
+   "log_ratio": 0.03958
+  },
+  {
+   "barrio": "Boca",
+   "lat": -34.633,
+   "lon": -58.363,
+   "log_ratio": -0.15623
+  },
+  {
+   "barrio": "Boedo",
+   "lat": -34.626,
+   "lon": -58.417,
+   "log_ratio": -0.13428
+  },
+  {
+   "barrio": "Caballito",
+   "lat": -34.618,
+   "lon": -58.443,
+   "log_ratio": -0.00081
+  },
+  {
+   "barrio": "Chacarita",
+   "lat": -34.589,
+   "lon": -58.453,
+   "log_ratio": 0.03548
+  },
+  {
+   "barrio": "Coghlan",
+   "lat": -34.563,
+   "lon": -58.474,
+   "log_ratio": 0.04649
+  },
+  {
+   "barrio": "Colegiales",
+   "lat": -34.579,
+   "lon": -58.45,
+   "log_ratio": 0.11934
+  },
+  {
+   "barrio": "Constitución",
+   "lat": -34.624,
+   "lon": -58.384,
+   "log_ratio": -0.14107
+  },
+  {
+   "barrio": "Flores",
+   "lat": -34.628,
+   "lon": -58.464,
+   "log_ratio": -0.05249
+  },
+  {
+   "barrio": "Floresta",
+   "lat": -34.631,
+   "lon": -58.485,
+   "log_ratio": -0.10051
+  },
+  {
+   "barrio": "Liniers",
+   "lat": -34.644,
+   "lon": -58.517,
+   "log_ratio": -0.12652
+  },
+  {
+   "barrio": "Mataderos",
+   "lat": -34.654,
+   "lon": -58.504,
+   "log_ratio": -0.22599
+  },
+  {
+   "barrio": "Monte Castro",
+   "lat": -34.621,
+   "lon": -58.506,
+   "log_ratio": -0.04567
+  },
+  {
+   "barrio": "Núñez",
+   "lat": -34.55,
+   "lon": -58.463,
+   "log_ratio": 0.06318
+  },
+  {
+   "barrio": "Palermo",
+   "lat": -34.583,
+   "lon": -58.424,
+   "log_ratio": -0.00628
+  },
+  {
+   "barrio": "Parque Avellaneda",
+   "lat": -34.646,
+   "lon": -58.479,
+   "log_ratio": -0.12523
+  },
+  {
+   "barrio": "Parque Chacabuco",
+   "lat": -34.635,
+   "lon": -58.436,
+   "log_ratio": 0.04819
+  },
+  {
+   "barrio": "Parque Patricios",
+   "lat": -34.634,
+   "lon": -58.404,
+   "log_ratio": -0.09434
+  },
+  {
+   "barrio": "Puerto Madero",
+   "lat": -34.614,
+   "lon": -58.363,
+   "log_ratio": 0.11428
+  },
+  {
+   "barrio": "Recoleta",
+   "lat": -34.592,
+   "lon": -58.395,
+   "log_ratio": -0.128
+  },
+  {
+   "barrio": "Retiro",
+   "lat": -34.595,
+   "lon": -58.379,
+   "log_ratio": -0.09459
+  },
+  {
+   "barrio": "Saavedra",
+   "lat": -34.552,
+   "lon": -58.484,
+   "log_ratio": 0.06617
+  },
+  {
+   "barrio": "San Cristóbal",
+   "lat": -34.623,
+   "lon": -58.401,
+   "log_ratio": -0.0361
+  },
+  {
+   "barrio": "San Nicolás",
+   "lat": -34.605,
+   "lon": -58.384,
+   "log_ratio": -0.17078
+  },
+  {
+   "barrio": "San Telmo",
+   "lat": -34.621,
+   "lon": -58.376,
+   "log_ratio": -0.12869
+  },
+  {
+   "barrio": "Villa Crespo",
+   "lat": -34.598,
+   "lon": -58.439,
+   "log_ratio": -0.07287
+  },
+  {
+   "barrio": "Villa Devoto",
+   "lat": -34.603,
+   "lon": -58.511,
+   "log_ratio": 0.00819
+  },
+  {
+   "barrio": "Villa Gral. Mitre",
+   "lat": -34.61,
+   "lon": -58.467,
+   "log_ratio": -0.06489
+  },
+  {
+   "barrio": "Villa Lugano",
+   "lat": -34.675,
+   "lon": -58.473,
+   "log_ratio": -0.24898
+  },
+  {
+   "barrio": "Villa Luro",
+   "lat": -34.639,
+   "lon": -58.504,
+   "log_ratio": -0.04597
+  },
+  {
+   "barrio": "Villa Ortúzar",
+   "lat": -34.581,
+   "lon": -58.468,
+   "log_ratio": 0.05948
+  },
+  {
+   "barrio": "Villa Pueyrredón",
+   "lat": -34.584,
+   "lon": -58.504,
+   "log_ratio": 0.05862
+  },
+  {
+   "barrio": "Villa Santa Rita",
+   "lat": -34.617,
+   "lon": -58.478,
+   "log_ratio": -0.01128
+  },
+  {
+   "barrio": "Villa Urquiza",
+   "lat": -34.573,
+   "lon": -58.482,
+   "log_ratio": 0.0789
+  },
+  {
+   "barrio": "Villa del Parque",
+   "lat": -34.607,
+   "lon": -58.488,
+   "log_ratio": 0.02304
+  },
+  {
+   "barrio": "Vélez Sarsfield",
+   "lat": -34.631,
+   "lon": -58.495,
+   "log_ratio": -0.10513
+  }
+ ]
+}
